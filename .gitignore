@@ -28,4 +28,5 @@ pnpm-debug.log*
 # Testing stuff
 my-team.json
 enemy-team.json
+enemy-team-doubles.json
 poke-engine-legacy.ts

@@ -204,12 +204,13 @@ export function ResultsView({ results, error }: { results: CliResult | null; err
 						const dmgMax = best?.maxDamagePercent?.toFixed(1) ?? '-';
 						const altText = [second, third]
 							.filter(Boolean)
-							.map((p, i) => `#${i + 2} ${p.pokemon} ${(p.score * 100).toFixed(0)}%`)
+							.map((p, i) => `#${i + 2} ${truncateText(p.pokemon, 20)} ${(p.score * 100).toFixed(0)}%`)
 							.join(' | ');
 						const firstNote = best?.notes?.[0] ?? 'No tactical note.';
 						const wrappedNote = wrapText(firstNote, 44);
 						const confidence = best?.confidence ?? 'Low';
 						const why = best?.rationale?.[0] ?? 'No rationale available.';
+						const bestName = best ? truncateText(best.pokemon, 24) : '';
 
 						return (
 							<Box
@@ -226,7 +227,7 @@ export function ResultsView({ results, error }: { results: CliResult | null; err
 								{best ? (
 									<>
 										<Text color={scoreColor(best.score)}>
-											#1 {truncateText(best.pokemon, 14)} {best.speedAdvantage ? '⚡' : ''} {best.role ? `(${best.role})` : ''}
+											#1 {bestName} {best.speedAdvantage ? '⚡' : ''} {best.role ? `(${best.role})` : ''}
 										</Text>
 										<Text dimColor>Move {truncateText(best.move ?? '(none)', 24)}</Text>
 										<Text dimColor>Confidence {confidence}</Text>
@@ -241,7 +242,7 @@ export function ResultsView({ results, error }: { results: CliResult | null; err
 								) : (
 									<Text dimColor>No matchup data.</Text>
 								)}
-								<Text dimColor>Alts {truncateText(altText || '-', 44)}</Text>
+								<Text dimColor>Alts {truncateText(altText || '-', 46)}</Text>
 								<Text color="magenta">Note {wrappedNote[0]}</Text>
 								{wrappedNote.slice(1).map((line, lineIdx) => (
 									<Text key={`${enemy}-note-${lineIdx}`} color="magenta">     {line}</Text>

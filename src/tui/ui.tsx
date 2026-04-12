@@ -53,13 +53,13 @@ export function InkTuiApp({ defaults }: { defaults: TuiDefaults }): React.JSX.El
 
 	const evaluationOptions: EvaluationOptions = {
 		battleState: { weather: 'none', terrain: 'none', mySide: {}, enemySide: {} },
-		battleFormat: setup.battleFormat,
 		lookaheadTurns: 2,
 		allowSwitching: false,
 		roleWeight: 0.12,
 		defensiveWeight: 0.22,
 		opponentRiskWeight: 0.5,
 		...defaults.evaluationOptions,
+		battleFormat: setup.battleFormat,
 		mode: setup.mode,
 	};
 
