@@ -14,6 +14,11 @@ import {
 	stageMultiplier,
 } from './helpers.js';
 
+type ConsensusScenario = {
+	name: string;
+	sourceNote: string;
+};
+
 function makeMove(overrides: Partial<MoveEntry> = {}): MoveEntry {
 	return {
 		name: 'Tackle',
@@ -84,15 +89,45 @@ test('confidenceFromSignals reflects score/reliability and setup volatility', ()
 	assert.equal(confidenceFromSignals(0.1, undefined, []), 'Low');
 });
 
-test('hazardSwitchInFraction handles type effects and grounded spikes', () => {
+test('hazardSwitchInFraction follows competitive hazard mechanics consensus scenarios', () => {
 	const groundedRockWeak = makePokemon('Charizard', { species: { name: 'Charizard', types: ['Fire', 'Flying'], baseStats: { hp: 78, atk: 84, def: 78, spa: 109, spd: 85, spe: 100 } } });
 	const groundedNeutral = makePokemon('Snorlax', { species: { name: 'Snorlax', types: ['Normal'], baseStats: { hp: 160, atk: 110, def: 65, spa: 65, spd: 110, spe: 30 } } });
 	const teraGrounded = makePokemon('Dragonite', { species: { name: 'Dragonite', types: ['Dragon', 'Flying'], baseStats: { hp: 91, atk: 134, def: 95, spa: 100, spd: 100, spe: 80 } }, teraType: 'Steel' });
 
-	assert.equal(hazardSwitchInFraction(groundedRockWeak, { stealthRock: true, spikesLayers: 3 }), 0.5);
-	assert.equal(hazardSwitchInFraction(groundedNeutral, { stealthRock: true, spikesLayers: 2 }), (1 / 8) + (1 / 6));
-	assert.equal(hazardSwitchInFraction(teraGrounded, { spikesLayers: 1 }), 1 / 8);
-	assert.equal(hazardSwitchInFraction(groundedNeutral), 0);
+	const scenarios: Array<ConsensusScenario & { actual: number; expected: number }> = [
+		{
+			name: 'Charizard loses 50% to Stealth Rock and ignores Spikes while Flying',
+			sourceNote: 'Competitive consensus and simulator behavior: SR scales by Rock weakness; Flying-types are immune to Spikes.',
+			actual: hazardSwitchInFraction(groundedRockWeak, { stealthRock: true, spikesLayers: 3 }),
+			expected: 0.5,
+		},
+		{
+			name: 'Grounded neutral target takes SR + 2 layers of Spikes',
+			sourceNote: 'Standard hazard math used in Smogon analyses: SR 12.5% + 2 layers Spikes 16.67%.',
+			actual: hazardSwitchInFraction(groundedNeutral, { stealthRock: true, spikesLayers: 2 }),
+			expected: (1 / 8) + (1 / 6),
+		},
+		{
+			name: 'Tera removes Flying immunity so Spikes apply',
+			sourceNote: 'Current SV play consensus: type-changing effects alter grounded checks for hazard interactions.',
+			actual: hazardSwitchInFraction(teraGrounded, { spikesLayers: 1 }),
+			expected: 1 / 8,
+		},
+		{
+			name: 'No hazards yields zero switch-in chip',
+			sourceNote: 'Baseline mechanical expectation across cartridge/simulator play.',
+			actual: hazardSwitchInFraction(groundedNeutral),
+			expected: 0,
+		},
+	];
+
+	for (const scenario of scenarios) {
+		assert.equal(
+			scenario.actual,
+			scenario.expected,
+			`${scenario.name} | Cross-reference: ${scenario.sourceNote}`,
+		);
+	}
 });
 
 test('applyBoostDelta applies additive boosts and clamps range', () => {
@@ -101,10 +136,41 @@ test('applyBoostDelta applies additive boosts and clamps range', () => {
 	assert.deepEqual(boosted.boosts, { atk: 6, def: -6, spa: 0, spd: 0, spe: 2 });
 });
 
-test('setupBoostDelta prefers explicit move boosts and recognizes known setup names', () => {
-	assert.deepEqual(setupBoostDelta(makeMove({ name: 'Custom Setup', category: 'Status', setupBoosts: { atk: 2 } })), { atk: 2 });
-	assert.deepEqual(setupBoostDelta(makeMove({ name: 'Dragon Dance', category: 'Status' })), { atk: 1, spe: 1 });
-	assert.equal(setupBoostDelta(makeMove({ name: 'Will-O-Wisp', category: 'Status' })), undefined);
+test('setupBoostDelta maps known setup moves in line with competitive move semantics', () => {
+	assert.deepEqual(
+		setupBoostDelta(makeMove({ name: 'Custom Setup', category: 'Status', setupBoosts: { atk: 2 } })),
+		{ atk: 2 },
+		'Custom move-provided boosts should override name mapping semantics.',
+	);
+
+	const setupScenarios: Array<ConsensusScenario & { moveName: string; expected: ReturnType<typeof setupBoostDelta> }> = [
+		{
+			name: 'Dragon Dance boosts Attack and Speed',
+			sourceNote: 'Common competitive set-building consensus for Dragon Dance sweepers.',
+			moveName: 'Dragon Dance',
+			expected: { atk: 1, spe: 1 },
+		},
+		{
+			name: 'Shell Smash sharply boosts offenses/speed while lowering defenses',
+			sourceNote: 'Standard cartridge/simulator behavior used in competitive planning.',
+			moveName: 'Shell Smash',
+			expected: { atk: 2, spa: 2, spe: 2, def: -1, spd: -1 },
+		},
+		{
+			name: 'Will-O-Wisp is not a setup move',
+			sourceNote: 'Competitive usage treats Will-O-Wisp as status utility, not offensive setup.',
+			moveName: 'Will-O-Wisp',
+			expected: undefined,
+		},
+	];
+
+	for (const scenario of setupScenarios) {
+		assert.deepEqual(
+			setupBoostDelta(makeMove({ name: scenario.moveName, category: 'Status' })),
+			scenario.expected,
+			`${scenario.name} | Cross-reference: ${scenario.sourceNote}`,
+		);
+	}
 });
 
 test('aggregateOpponentResponse blends worst-case and weighted average safely', () => {
