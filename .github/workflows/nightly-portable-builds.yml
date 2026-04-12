@@ -6,11 +6,39 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
+  prep-tag:
+    name: prepare-nightly-tag
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.meta.outputs.tag }}
+      title: ${{ steps.meta.outputs.title }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Compute nightly tag
+        id: meta
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION=$(node -e "const fs=require('fs'); const p=JSON.parse(fs.readFileSync('package.json','utf8')); process.stdout.write(p.version)")
+          DATE_UTC=$(date -u +%Y%m%d)
+          TAG="nightly-v${VERSION}-${DATE_UTC}.${GITHUB_RUN_NUMBER}.${GITHUB_RUN_ATTEMPT}"
+          TITLE="Nightly build v${VERSION} (${DATE_UTC})"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "title=$TITLE" >> "$GITHUB_OUTPUT"
+
   build-portable:
     name: portable-${{ matrix.os }}
+    needs: prep-tag
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -33,10 +61,56 @@ jobs:
       - name: Build portable package
         run: npm run package:portable
 
+      - name: Archive portable package (Unix)
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd release
+          TAR_NAME="poke-engine-portable-${{ matrix.os }}.tar.gz"
+          tar -czf "$TAR_NAME" portable-*
+
+      - name: Archive portable package (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $dir = Get-ChildItem -Path release -Directory -Filter 'portable-*' | Select-Object -First 1
+          if (-not $dir) { throw 'No portable-* directory found in release/' }
+          $zipPath = Join-Path 'release' 'poke-engine-portable-windows-latest.zip'
+          Compress-Archive -Path $dir.FullName -DestinationPath $zipPath -Force
+
       - name: Upload portable artifact
         uses: actions/upload-artifact@v4
         with:
           name: poke-engine-portable-${{ matrix.os }}
-          path: release/portable-*
+          path: |
+            release/*.tar.gz
+            release/*.zip
           if-no-files-found: error
           retention-days: 14
+
+  publish-nightly-prerelease:
+    name: publish-nightly-prerelease
+    needs: [prep-tag, build-portable]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: release-assets
+
+      - name: Create nightly pre-release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ needs.prep-tag.outputs.tag }}
+          name: ${{ needs.prep-tag.outputs.title }}
+          prerelease: true
+          make_latest: false
+          body: |
+            Automated nightly portable builds.
+
+            This pre-release uses a nightly tag format distinct from stable tags:
+            `${{ needs.prep-tag.outputs.tag }}`
+          files: |
+            release-assets/**/*.tar.gz
+            release-assets/**/*.zip
