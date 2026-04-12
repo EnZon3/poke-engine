@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { useApp, useInput } from 'ink';
 import { loadData } from '../data.js';
 import { applyEstimatedSpread } from '../estimation.js';
-import { evaluateTeams } from '../evaluation.js';
+import { evaluateTeams } from '../evaluation/index.js';
 import type { TuiDefaults } from '../interactive.js';
 import { loadTeamFromSaveFile } from '../save-import.js';
 import { fetchTrainerTeamFromSource } from '../trainers.js';

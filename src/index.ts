@@ -19,7 +19,7 @@ export type {
 
 export { loadData, resolveSpecies } from './data.js';
 export { calculateStat, buildPokemon } from './pokemon.js';
-export { evaluateTeams, hazardSwitchInFraction } from './evaluation.js';
+export { evaluateTeams, hazardSwitchInFraction } from './evaluation/index.js';
 export { estimateSpreadForSet, applyEstimatedSpread, applyEstimatedSpreadsToTeam } from './estimation.js';
 export { loadTeamFromSaveFile } from './save-import.js';
 export { fetchTrainerTeam, fetchTrainerTeamFromSource } from './trainers.js';

@@ -1,5 +1,5 @@
 import { loadData } from './data.js';
-import { evaluateTeams } from './evaluation.js';
+import { evaluateTeams } from './evaluation/index.js';
 import type { EvaluationOptions, PokemonSet } from './types.js';
 
 const ANSI = {

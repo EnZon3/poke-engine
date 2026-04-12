@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { loadData } from './data.js';
-import { evaluateTeams } from './evaluation.js';
+import { evaluateTeams } from './evaluation/index.js';
 import { promptForTeam, printResultsPretty, runTUI } from './interactive.js';
 import { loadTeamFromSaveFile } from './save-import.js';
 import { fetchTrainerTeamFromSource } from './trainers.js';

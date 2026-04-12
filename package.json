@@ -6,6 +6,7 @@
 	"scripts": {
 		"start": "tsx src/main.ts",
 		"test": "tsx src/main.ts",
+		"validate:test": "node --import tsx --test --test-concurrency=1 \"src/**/*.test.ts\"",
 		"build:bundle": "tsc --outDir build/esm --rootDir src",
 		"package:portable": "npm run build:bundle && node tools/package-portable.mjs",
 		"package:bin:linux-x64": "npm run build:bundle && pkg build/esm/main.js --targets node20-linux-x64 --output release/poke-engine-linux-x64",
@@ -15,7 +16,7 @@
 		"package:bin:all": "npm run package:bin:linux-x64 && npm run package:bin:macos-x64 && npm run package:bin:macos-arm64 && npm run package:bin:win-x64",
 		"validate:bench": "tsx src/benchmark.ts",
 		"validate:typecheck": "tsc --noEmit",
-		"validate:all": "npm run validate:typecheck && npm run validate:bench"
+		"validate:all": "npm run validate:typecheck && npm run validate:test && npm run validate:bench"
 	},
 	"keywords": [],
 	"author": "",
