@@ -125,7 +125,7 @@ jobs:
 
             This pre-release uses a nightly tag
             `${{ needs.prep-tag.outputs.tag }}`
-            See [commits for changes between builds](https://github.com/${{ github.repository }}/compare/${{ github.event.before || github.sha }}...${{ github.sha }})
+            See [recent commits on this branch](https://github.com/${{ github.repository }}/commits/${{ github.ref_name }})
           files: |
             release-assets/**/*.tar.gz
             release-assets/**/*.zip
