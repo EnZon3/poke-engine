@@ -1,0 +1,29 @@
+{
+	"name": "poke-engine",
+	"version": "1.0.0",
+	"description": "",
+	"main": "src/index.ts",
+	"scripts": {
+		"start": "tsx src/main.ts",
+		"test": "tsx src/main.ts",
+		"validate:bench": "tsx src/benchmark.ts",
+		"validate:typecheck": "tsc --noEmit",
+		"validate:all": "npm run validate:typecheck && npm run validate:bench"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "AGPL-3.0",
+	"type": "module",
+	"devDependencies": {
+		"@types/node": "^25.5.2",
+		"@types/react": "^19.2.14",
+		"tsx": "^4.21.0",
+		"typescript": "^6.0.2"
+	},
+	"dependencies": {
+		"ink": "^7.0.0",
+		"ink-text-input": "^6.0.0",
+		"pkhex": "^26.1.22",
+		"react": "^19.2.5"
+	}
+}
