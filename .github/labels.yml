@@ -1,0 +1,44 @@
+- name: type: bug
+  color: "d73a4a"
+  description: Something is not working as expected.
+- name: type: feature
+  color: "a2eeef"
+  description: New capability or enhancement request.
+- name: type: documentation
+  color: "0075ca"
+  description: Documentation updates or clarifications.
+- name: type: question
+  color: "d876e3"
+  description: Clarification or usage question.
+
+- name: area: mechanics
+  color: "5319e7"
+  description: Battle mechanics and correctness behavior.
+- name: area: evaluation
+  color: "1d76db"
+  description: Matchup scoring and recommendation logic.
+- name: area: import
+  color: "0e8a16"
+  description: Team input parsing and import pathways.
+- name: area: cli
+  color: "0052cc"
+  description: Command-line interface behavior.
+- name: area: tui
+  color: "c2e0c6"
+  description: Terminal UI behavior.
+- name: area: build-release
+  color: "fbca04"
+  description: Packaging, release, and CI workflow topics.
+
+- name: status: needs-triage
+  color: "ededed"
+  description: Awaiting maintainer triage.
+- name: status: needs-repro
+  color: "fef2c0"
+  description: Needs a clearer reproducer to proceed.
+- name: status: blocked
+  color: "b60205"
+  description: Work is blocked by an external dependency.
+- name: status: good first issue
+  color: "7057ff"
+  description: Good starter task for new contributors.
