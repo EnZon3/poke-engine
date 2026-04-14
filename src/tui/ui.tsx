@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { useApp, useInput } from 'ink';
+import { useApp, useInput, useWindowSize } from 'ink';
 import { loadData } from '../data.js';
 import { applyEstimatedSpread } from '../estimation.js';
 import { evaluateTeams } from '../evaluation/index.js';
@@ -16,6 +16,7 @@ import { EditorView, HelpView, ResultsView, SetupView } from './views.js';
 
 export function InkTuiApp({ defaults }: { defaults: TuiDefaults }): React.JSX.Element {
 	const { exit } = useApp();
+	const { columns, rows } = useWindowSize();
 	const [phase, setPhase] = useState<'setup' | 'editor' | 'results'>('setup');
 	const [busy, setBusy] = useState(false);
 	const [error, setError] = useState<string | null>(null);
@@ -308,6 +309,8 @@ export function InkTuiApp({ defaults }: { defaults: TuiDefaults }): React.JSX.El
 				activeQuestion={activeQuestion}
 				error={error}
 				statusMsg={statusMsg}
+				terminalColumns={columns}
+				terminalRows={rows}
 			/>
 		);
 	}
@@ -332,6 +335,8 @@ export function InkTuiApp({ defaults }: { defaults: TuiDefaults }): React.JSX.El
 				setSavePath={setSavePath}
 				statusMsg={statusMsg}
 				error={error}
+				terminalColumns={columns}
+				terminalRows={rows}
 			/>
 		);
 	}
@@ -343,6 +348,8 @@ export function InkTuiApp({ defaults }: { defaults: TuiDefaults }): React.JSX.El
 			error={error}
 			selectedIndex={Math.max(0, Math.min(selectedResultIndex, Math.max(0, resultEnemyKeys.length - 1)))}
 			expandedEnemyKey={expandedEnemyKey}
+			terminalColumns={columns}
+			terminalRows={rows}
 		/>
 	);
 }
