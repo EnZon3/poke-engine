@@ -34,6 +34,25 @@ async function fetchPokeAPI(path: string): Promise<any> {
 	return res.json();
 }
 
+async function fetchPokeAPISafe(path: string): Promise<any | null> {
+	const url = `https://pokeapi.co/api/v2/${path}`;
+	const res = await fetch(url);
+	if (res.status === 404) return null;
+	if (!res.ok) throw new Error(`Failed to fetch PokeAPI ${path}: ${res.status} ${res.statusText}`);
+	return res.json();
+}
+
+async function fetchPokemonEntry(speciesName: string): Promise<any | null> {
+	const direct = await fetchPokeAPISafe(`pokemon/${speciesName}`);
+	if (direct) return direct;
+	const speciesData = await fetchPokeAPISafe(`pokemon-species/${speciesName}`);
+	if (!speciesData) return null;
+	const defaultVariety = (speciesData.varieties as any[] | undefined)?.find((v: any) => v.is_default === true);
+	const defaultName: string | undefined = defaultVariety?.pokemon?.name;
+	if (!defaultName || defaultName === speciesName) return null;
+	return fetchPokeAPISafe(`pokemon/${defaultName}`);
+}
+
 function formatPokemonName(name: string): string {
 	return name
 		.split('-')
@@ -71,7 +90,7 @@ async function loadSpeciesFromPokeAPI(gen?: number): Promise<Record<string, Spec
 	const chunkSize = 25;
 	for (let i = 0; i < speciesList.length; i += chunkSize) {
 		const chunk = speciesList.slice(i, i + chunkSize);
-		const pokemonEntries = await Promise.all(chunk.map(name => fetchPokeAPI(`pokemon/${name}`)));
+		const pokemonEntries = await Promise.all(chunk.map(name => fetchPokemonEntry(name)));
 		for (const pkmn of pokemonEntries) {
 			if (!pkmn?.name || !Array.isArray(pkmn?.types) || !Array.isArray(pkmn?.stats)) continue;
 			const sortedTypes = [...pkmn.types].sort((a: any, b: any) => (a.slot ?? 0) - (b.slot ?? 0));
