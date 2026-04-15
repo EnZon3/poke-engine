@@ -4,6 +4,23 @@ Last updated: April 2026
 
 This roadmap should evolve with contributor priorities.
 
+## Next Release Candidate: v1.2.0
+
+Theme: explainability and team diagnostics.
+
+- [ ] Add team-level diagnostics:
+  - coverage heatmap
+  - defensive weakness/resistance summary
+  - threat pressure map
+- [ ] Improve matchup rationale output:
+  - explain primary score drivers
+  - identify key risks
+  - distinguish offensive, defensive, speed, setup, and gimmick contributions
+- [ ] Add focused mechanics tests for status, weather, hazards, screens, and priority.
+- [ ] Expand benchmark profiles by generation and format.
+- [ ] Add optional report/export output for batch analysis.
+
+
 ## Now (0-2 months)
 
 - [x] Stabilize evaluation module boundaries after refactors.
