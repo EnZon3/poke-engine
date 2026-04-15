@@ -224,7 +224,7 @@ The following codes are accepted when selecting **Use trainer roster** → **Gam
 
 | Game | Primary code | Accepted aliases |
 |---|---|---|
-| Pokémon Red / Blue / Green | `rbg` | `rby`, `rgb`, `gen1` |
+| Pokémon Red / Blue / Green | `rbg` | `rby`, `rgb`, `gen1` *(note: Littleroot Dreams uses `rbg` internally; `rby` is mapped to it automatically)* |
 | Pokémon Yellow | `rbg` | *(same roster as Red/Blue/Green)* |
 | Pokémon Gold / Silver / Crystal | `gsc` | `gen2` |
 | Pokémon Ruby / Sapphire | `rs` | `rse`, `hoenn`, `gen3` |
@@ -333,7 +333,7 @@ After pressing `c` in the editor, the TUI switches to the **Matchup Results** sc
 |---|---|
 | `Up` / `Down` / `Left` / `Right` | Move selection between cards |
 | `Enter` or `e` | Expand / collapse the selected card for detailed stats |
-| `h` | Open fullscreen help overlay |
+| `h` | Toggle fullscreen help overlay (opens when closed; closes when open) |
 | `m` | Close fullscreen help overlay |
 | `b` | Return to the editor |
 | `r` | Recompute the matchup with the current teams |
@@ -387,7 +387,7 @@ Press `h` from the Results screen to open a fullscreen interpretation guide cove
 - A practical battle-planning workflow (5 steps)
 - Practical KO thresholds for action decisions
 
-Press `h` or `m` to close it.
+Press `h` again to close it, or press `m` to close it.
 
 ---
 
