@@ -8,6 +8,16 @@ The format is based on Keep a Changelog and this project follows Semantic Versio
 
 - _No changes yet._
 
+## [1.1.2] - 2026-04-16
+
+### Security
+- Replaced regular-expression parsing over imported Showdown team text with deterministic string parsing to avoid potential regex backtracking denial-of-service cases.
+- Replaced form-name regex parsing in species resolution with bounded string parsing.
+
+### Fixed
+- Added explicit read-only `GITHUB_TOKEN` permissions to validation workflows.
+- Added regression coverage for Showdown imports with nicknames and gender markers.
+
 ## [1.1.1] - 2026-04-16
 
 ### Added
