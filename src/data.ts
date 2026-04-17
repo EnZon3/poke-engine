@@ -14,6 +14,16 @@ export function setActiveGeneration(gen?: number): void {
 	ACTIVE_GENERATION = gen ?? 9;
 }
 
+async function fetchOptionalShowdownDataset(prefix: string, gen: number | undefined, fileName: string): Promise<any> {
+	try {
+		return gen
+			? await fetchShowdownJSONWithFallback(`${prefix}${fileName}`, fileName)
+			: await fetchShowdownJSON(fileName);
+	} catch {
+		return {};
+	}
+}
+
 async function loadSpeciesFromPokeAPI(gen?: number): Promise<Record<string, SpeciesEntry>> {
 	const generation = gen ?? 9;
 	const speciesList = await fetchPokeAPIGenerationSpeciesNames(generation);
@@ -52,20 +62,8 @@ export async function loadData(gen?: number, dataSource: DataSource = 'showdown'
 			? (gen ? fetchShowdownJSONWithFallback(`${prefix}pokedex.json`, 'pokedex.json') : fetchShowdownJSON('pokedex.json'))
 			: Promise.resolve({}),
 		gen ? fetchShowdownJSONWithFallback(`${prefix}moves.json`, 'moves.json') : fetchShowdownJSON('moves.json'),
-		(async () => {
-			try {
-				return gen ? await fetchShowdownJSONWithFallback(`${prefix}abilities.json`, 'abilities.json') : await fetchShowdownJSON('abilities.json');
-			} catch {
-				return {};
-			}
-		})(),
-		(async () => {
-			try {
-				return gen ? await fetchShowdownJSONWithFallback(`${prefix}items.json`, 'items.json') : await fetchShowdownJSON('items.json');
-			} catch {
-				return {};
-			}
-		})(),
+		fetchOptionalShowdownDataset(prefix, gen, 'abilities.json'),
+		fetchOptionalShowdownDataset(prefix, gen, 'items.json'),
 	]);
 
 	if (dataSource === 'showdown') {

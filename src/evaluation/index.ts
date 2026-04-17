@@ -7,12 +7,37 @@ import type { EvaluationOptions, MatchupEvaluation, PokemonSet } from '../types.
 
 export { hazardSwitchInFraction } from './helpers.js';
 
+function withConfidenceAndRationale(
+	score: number,
+	profile: BestSinglesChoice['duel']['profile'],
+	speedAdvantage: boolean,
+	role: string,
+	notes: string[],
+): { confidence: MatchupEvaluation['confidence']; rationale: string[] } {
+	const confidence = confidenceFromSignals(score, profile, notes);
+	return {
+		confidence,
+		rationale: buildRationale({
+			profile,
+			score,
+			speedAdvantage,
+			role,
+			confidence,
+		}),
+	};
+}
+
 function buildDoublesEntry(choice: BestDoublesChoice, options: EvaluationOptions): MatchupEvaluation {
 	const notes = [...choice.notes];
 	if (options.gimmickControl === 'auto' && choice.myTag) notes.push(`Auto gimmick timing selected: ${choice.myTag}.`);
 	if (options.gimmickControl === 'auto' && choice.enemyTag) notes.push(`Opponent best response assumes: ${choice.enemyTag}.`);
-
-	const confidence = confidenceFromSignals(choice.score, choice.duel.profile, notes);
+	const { confidence, rationale } = withConfidenceAndRationale(
+		choice.score,
+		choice.duel.profile,
+		choice.duel.speedAdvantage,
+		choice.duel.role,
+		notes,
+	);
 	return {
 		pokemon: choice.duel.pairName,
 		move: choice.duel.moveSummary,
@@ -24,13 +49,7 @@ function buildDoublesEntry(choice: BestDoublesChoice, options: EvaluationOptions
 		speedAdvantage: choice.duel.speedAdvantage,
 		role: choice.duel.role,
 		confidence,
-		rationale: buildRationale({
-			profile: choice.duel.profile,
-			score: choice.score,
-			speedAdvantage: choice.duel.speedAdvantage,
-			role: choice.duel.role,
-			confidence,
-		}),
+		rationale,
 		notes,
 	};
 }
@@ -39,7 +58,13 @@ function buildSinglesEntry(choice: BestSinglesChoice, options: EvaluationOptions
 	const notes = [...choice.notes];
 	if (options.gimmickControl === 'auto' && choice.myTag !== 'base') notes.push(`Auto gimmick timing selected: ${choice.myTag}.`);
 	if (options.gimmickControl === 'auto' && choice.enemyTag) notes.push(`Opponent best response assumes: ${choice.enemyTag}.`);
-	const confidence = confidenceFromSignals(choice.score, choice.duel.profile, notes);
+	const { confidence, rationale } = withConfidenceAndRationale(
+		choice.score,
+		choice.duel.profile,
+		choice.duel.speedAdvantage,
+		choice.duel.role,
+		notes,
+	);
 
 	return {
 		pokemon: choice.mine.species.name,
@@ -52,13 +77,7 @@ function buildSinglesEntry(choice: BestSinglesChoice, options: EvaluationOptions
 		speedAdvantage: choice.duel.speedAdvantage,
 		role: choice.duel.role,
 		confidence,
-		rationale: buildRationale({
-			profile: choice.duel.profile,
-			score: choice.score,
-			speedAdvantage: choice.duel.speedAdvantage,
-			role: choice.duel.role,
-			confidence,
-		}),
+		rationale,
 		notes,
 	};
 }

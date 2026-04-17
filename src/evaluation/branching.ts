@@ -4,8 +4,16 @@ import { evaluate1v1 } from './singles.js';
 import type { BattlePokemon, EvaluationOptions } from '../types.js';
 import type { PokemonPairVariant, PokemonVariant } from './variants.js';
 
-type BranchScored<T> = {
-	duel: T;
+type SinglesWorstResponse = {
+	duel: ReturnType<typeof evaluate1v1>;
+	score: number;
+	notes: string[];
+	enemy: BattlePokemon;
+	enemyTag: string;
+};
+
+type DoublesWorstResponse = {
+	duel: ReturnType<typeof evaluate2v2>;
 	score: number;
 	notes: string[];
 	enemyTag: string;
@@ -64,8 +72,8 @@ function selectWorstSinglesResponse(
 	myVariant: PokemonVariant,
 	enemyVariants: PokemonVariant[],
 	options: EvaluationOptions,
-): BranchScored<ReturnType<typeof evaluate1v1>> & { enemy: BattlePokemon } | null {
-	let worst: (BranchScored<ReturnType<typeof evaluate1v1>> & { enemy: BattlePokemon }) | null = null;
+): SinglesWorstResponse | null {
+	let worst: SinglesWorstResponse | null = null;
 	for (const enemyVariant of enemyVariants) {
 		const duel = evaluate1v1(myVariant.pokemon, enemyVariant.pokemon, options);
 		const adjusted = applySinglesHazardPenalty(duel.score, [...duel.notes], myVariant.pokemon, options);
@@ -86,8 +94,8 @@ function selectWorstDoublesResponse(
 	myVariant: PokemonPairVariant,
 	enemyVariants: PokemonPairVariant[],
 	options: EvaluationOptions,
-): BranchScored<ReturnType<typeof evaluate2v2>> | null {
-	let worst: BranchScored<ReturnType<typeof evaluate2v2>> | null = null;
+): DoublesWorstResponse | null {
+	let worst: DoublesWorstResponse | null = null;
 	for (const enemyVariant of enemyVariants) {
 		const duel = evaluate2v2(myVariant.pair, enemyVariant.pair, options);
 		const adjusted = applyDoublesHazardPenalty(duel.score, [...duel.notes], myVariant.pair, options);
