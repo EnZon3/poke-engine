@@ -1,4 +1,4 @@
-import { DATA_CACHE, resolveSpecies } from './data.js';
+import { getDataCache, resolveSpecies } from './data.js';
 import type { PokemonSet, Stats } from './types.js';
 
 type SpreadEstimate = {
@@ -28,11 +28,12 @@ function evTotal(evs: Stats): number {
 }
 
 function moveCategoryCounts(set: PokemonSet): { physical: number; special: number; status: number } {
+	const cache = getDataCache();
 	let physical = 0;
 	let special = 0;
 	let status = 0;
 	for (const moveName of set.moves) {
-		const move = DATA_CACHE.moves?.[moveName.toLowerCase()];
+		const move = cache.moves?.[moveName.toLowerCase()];
 		if (!move) continue;
 		if (move.category === 'Physical') physical++;
 		else if (move.category === 'Special') special++;

@@ -1,0 +1,146 @@
+
+> poke-engine@1.1.2 validate:bench
+> tsx src/benchmark.ts
+
+
+Benchmark validation
+────────────────────────────────────────────────────────────────────────
+Scenarios: 25
+
+────────────────────────────────────────────────────────────────────────
+✓ [PASS] Skarmory pressure check (SINGLES)
+Top 3      Zapdos  •  Magneton  •  Moltres
+Reference  Smogon ADV Skarmory checks/counters emphasizes Electric/Fire pressure and Magneton trap dynamics.
+
+────────────────────────────────────────────────────────────────────────
+✓ [PASS] Blissey breaker check (SINGLES)
+Top 3      Heracross  •  Swampert  •  Magneton
+Reference  Smogon ADV Blissey checks/counters: Fighting-types (notably Heracross) consistently pressure Blissey.
+
+────────────────────────────────────────────────────────────────────────
+✓ [PASS] Tyranitar counter check (SINGLES)
+Top 3      Heracross  •  Swampert  •  Starmie
+Reference  Smogon ADV Tyranitar checks/counters repeatedly cite Fighting- and Ground/Water-based pressure as primary answers.
+
+────────────────────────────────────────────────────────────────────────
+✓ [PASS] Aerodactyl anti-air check (SINGLES)
+Top 3      Swampert  •  Starmie  •  Zapdos
+Reference  ADV consensus has bulky Water/Rock-resistant responses as reliable Aerodactyl checks; Swampert and Starmie are common answers.
+
+────────────────────────────────────────────────────────────────────────
+✓ [PASS] Salamence anti-Dragon check (SINGLES)
+Top 3      Starmie  •  Zapdos  •  Swampert
+Reference  ADV play commonly relies on Ice coverage and strong neutral special pressure into Salamence; Starmie/Zapdos align with this.
+
+────────────────────────────────────────────────────────────────────────
+✓ [PASS] VGC lead pressure: Heatran + Landorus-T (DOUBLES)
+Top 3      Urshifu-Rapid-Strike + Landorus-Therian  •  Rillaboom + Urshifu-Rapid-Strike  •  Incineroar + Landorus-Therian
+Scores     Urshifu-Rapid-Strike + Landorus-Therian 100.95%  •  Rillaboom + Urshifu-Rapid-Strike 93.47%  •  Incineroar + Landorus-Therian 69.85%
+Reference  VGC consensus emphasizes Water/Fighting pressure and speed control utility into this Fire/Ground-oriented lead shell.
+
+────────────────────────────────────────────────────────────────────────
+✓ [PASS] VGC lead pressure: Incineroar + Rillaboom (DOUBLES)
+Top 3      Flutter Mane + Landorus-Therian  •  Incineroar + Amoonguss  •  Incineroar + Landorus-Therian
+Scores     Flutter Mane + Landorus-Therian 29.39%  •  Incineroar + Amoonguss 28.48%  •  Incineroar + Landorus-Therian 25.05%
+Reference  VGC play patterns often answer Incineroar/Rillaboom with strong Ground/Fairy pressure and speed utility to avoid Fake Out loops.
+
+────────────────────────────────────────────────────────────────────────
+✓ [PASS] VGC speed-control check: Urshifu-RS + Flutter Mane (DOUBLES)
+Top 3      Incineroar + Amoonguss  •  Rillaboom + Amoonguss  •  Rillaboom + Flutter Mane
+Scores     Incineroar + Amoonguss 108.68%  •  Rillaboom + Amoonguss 101.95%  •  Rillaboom + Flutter Mane 87.33%
+Reference  VGC resources repeatedly stress speed control + redirection + Fake Out as practical tools against fast pressure leads.
+
+────────────────────────────────────────────────────────────────────────
+✓ [PASS] VGC Tailwind lead check: Whimsicott + Gholdengo (DOUBLES)
+Top 3      Incineroar + Landorus-Therian  •  Incineroar + Amoonguss  •  Incineroar + Flutter Mane
+Scores     Incineroar + Landorus-Therian 100.81%  •  Incineroar + Amoonguss 99.29%  •  Incineroar + Flutter Mane 88.11%
+Reference  Tailwind + strong spread/special pressure is a staple lead pattern; practical responses favor immediate disruption plus counter-pressure.
+
+────────────────────────────────────────────────────────────────────────
+✓ [PASS] VGC Trick Room lead check: Cresselia + Ursaluna (DOUBLES)
+Top 3      Rillaboom + Amoonguss  •  Rillaboom + Urshifu-Rapid-Strike  •  Rillaboom + Landorus-Therian
+Scores     Rillaboom + Amoonguss 60.14%  •  Rillaboom + Urshifu-Rapid-Strike 45.83%  •  Rillaboom + Landorus-Therian 26.31%
+Reference  Trick Room setup leads are commonly answered with disruption and defensive tempo tools that can survive and stall key turns.
+
+────────────────────────────────────────────────────────────────────────
+✓ [PASS] VGC redirection + setup check: Amoonguss + Volcarona (DOUBLES)
+Top 3      Incineroar + Urshifu-Rapid-Strike  •  Urshifu-Rapid-Strike + Landorus-Therian  •  Incineroar + Landorus-Therian
+Scores     Incineroar + Urshifu-Rapid-Strike 94.70%  •  Urshifu-Rapid-Strike + Landorus-Therian 92.92%  •  Incineroar + Landorus-Therian 71.68%
+Reference  Redirection + setup lead shells reward lines that pressure setup turns while preserving board control and pivot options.
+
+────────────────────────────────────────────────────────────────────────
+✓ [PASS] VGC weather lead check: Pelipper + Archaludon (DOUBLES)
+Top 3      Incineroar + Amoonguss  •  Rillaboom + Amoonguss  •  Incineroar + Rillaboom
+Scores     Incineroar + Amoonguss 41.15%  •  Rillaboom + Amoonguss 37.24%  •  Incineroar + Rillaboom 18.86%
+Reference  Rain-oriented leads are commonly checked by weather-aware pressure plus terrain and priority utility for tempo control.
+
+────────────────────────────────────────────────────────────────────────
+✓ [PASS] VGC Intimidate pivot lead check: Incineroar + Landorus-T (DOUBLES)
+Top 3      Urshifu-Rapid-Strike + Landorus-Therian  •  Rillaboom + Urshifu-Rapid-Strike  •  Urshifu-Rapid-Strike + Amoonguss
+Scores     Urshifu-Rapid-Strike + Landorus-Therian 70.97%  •  Rillaboom + Urshifu-Rapid-Strike 70.83%  •  Urshifu-Rapid-Strike + Amoonguss 57.90%
+Reference  Double-Intimidate pivot leads are typically punished by strong special or crit-leaning pressure that resists attack-drop loops.
+
+────────────────────────────────────────────────────────────────────────
+✓ [PASS] Mechanics policy: Mega enabled by generation (Gen 6) (SINGLES)
+Top 3      Charizard-Mega-X
+Reference  Pokémon Showdown battle logic (`runMegaEvo`) and simulator tests confirm Mega Evolution applies in-battle in Gen 6+ and changes form/stat profile.
+
+────────────────────────────────────────────────────────────────────────
+✓ [PASS] Mechanics policy: Mega disabled via option (Gen 6) (SINGLES)
+Top 3      Charizard
+Reference  Mechanics policy `disable-all` intentionally suppresses Mega conversion regardless of generation, for format/ruleset simulation flexibility.
+
+────────────────────────────────────────────────────────────────────────
+✓ [PASS] Mechanics policy: Dynamax enabled by generation (Gen 8) (SINGLES)
+Top 3      Alakazam
+Reference  Showdown Dynamax implementation applies HP scaling and Max Move base-power conversion (Gen 8) for in-battle damage/survival impact.
+
+────────────────────────────────────────────────────────────────────────
+✓ [PASS] Mechanics policy: Dynamax disabled via option (Gen 8) (SINGLES)
+Top 3      Alakazam
+Reference  Mechanics policy `disable-all` suppresses Dynamax effects; this scenario checks reduced pressure against the same target state.
+
+────────────────────────────────────────────────────────────────────────
+✓ [PASS] Mechanics policy: Terastallization enabled by generation (Gen 9) (SINGLES)
+Top 3      Gengar
+Reference  Showdown Terastallization logic and tests confirm tera-type offensive STAB and defensive type override in Gen 9 contexts.
+
+────────────────────────────────────────────────────────────────────────
+✓ [PASS] Mechanics policy: Terastallization disabled via option (Gen 9) (SINGLES)
+Top 3      Gengar
+Reference  Mechanics policy `disable-all` suppresses Terastallization effects; this scenario checks lower pressure versus the same state.
+
+────────────────────────────────────────────────────────────────────────
+✓ [PASS] Edge gimmick: Tera defensive pivot enabled (Gen 9) (SINGLES)
+Top 3      Gyarados
+Reference  Showdown Terastallization behavior applies defensive type override; Ground tera into Electric pressure is a canonical immunity pivot pattern.
+
+────────────────────────────────────────────────────────────────────────
+✓ [PASS] Edge gimmick: Tera defensive pivot disabled (Gen 9) (SINGLES)
+Top 3      Gyarados
+Reference  With gimmicks disabled, tera defensive conversion is suppressed and matchup reverts toward base-type defensive profile.
+
+────────────────────────────────────────────────────────────────────────
+✓ [PASS] Edge gimmick: Dynamax Fighting bucket enabled (Gen 8) (SINGLES)
+Top 3      Conkeldurr
+Reference  Showdown Dynamax move mapping uses lower Max Move BP tables for Fighting/Poison than other attacking types.
+
+────────────────────────────────────────────────────────────────────────
+✓ [PASS] Edge gimmick: Dynamax Fighting bucket disabled (Gen 8) (SINGLES)
+Top 3      Conkeldurr
+Reference  With gimmicks disabled, the same set no longer receives Dynamax HP and Max Move conversion effects.
+
+────────────────────────────────────────────────────────────────────────
+✓ [PASS] Edge gimmick: Dynamax non-Fighting setup line enabled (Gen 8) (SINGLES)
+Top 3      Gengar
+Reference  Non-Fighting/Poison Max Move BP scaling plus setup-line selection should improve projected trade in this controlled matchup.
+
+────────────────────────────────────────────────────────────────────────
+✓ [PASS] Edge gimmick: Dynamax non-Fighting setup line disabled (Gen 8) (SINGLES)
+Top 3      Gengar
+Reference  Disabling gimmicks removes Dynamax conversion and survival boost, exposing lower projected setup-line stability.
+
+Validation summary
+────────────────────────────────────────────────────────────────────────
+Status: ALL PASS
+Passed: 25 / 25

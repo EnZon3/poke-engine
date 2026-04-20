@@ -1,4 +1,4 @@
-import { ACTIVE_GENERATION, DATA_CACHE, resolveSpecies } from './data.js';
+import { ACTIVE_GENERATION, getDataCache, isDataLoaded, resolveSpecies } from './data.js';
 import { natureModifier } from './mechanics.js';
 import { toID } from './utils.js';
 import type { BattlePokemon, PokemonSet, Stats } from './types.js';
@@ -45,7 +45,8 @@ export function calculateStat(base: number, iv: number, ev: number, level: numbe
 }
 
 export function buildPokemon(set: PokemonSet, options: BuildPokemonOptions = {}): BattlePokemon {
-	if (!DATA_CACHE.species || !DATA_CACHE.moves) {
+	const cache = getDataCache();
+	if (!isDataLoaded() || !cache.species || !cache.moves) {
 		throw new Error('Data not loaded; call loadData() first');
 	}
 	const disableBattleGimmicks = !!options.disableBattleGimmicks;
@@ -75,15 +76,15 @@ export function buildPokemon(set: PokemonSet, options: BuildPokemonOptions = {})
 		finalStats[stat] = calculateStat(base, iv, ev, set.level, modifier, stat === 'hp');
 	}
 
-	if (resolvedAbility && DATA_CACHE.abilities) {
-		const ability = DATA_CACHE.abilities[resolvedAbility.toLowerCase()];
+	if (resolvedAbility && cache.abilities) {
+		const ability = cache.abilities[resolvedAbility.toLowerCase()];
 		if (ability?.doubleAttack) {
 			finalStats.atk = Math.floor(finalStats.atk * 2);
 		}
 	}
 
-	if (set.item && DATA_CACHE.items) {
-		const item = DATA_CACHE.items[set.item.toLowerCase()];
+	if (set.item && cache.items) {
+		const item = cache.items[set.item.toLowerCase()];
 		if (item) {
 			if (item.attackMult) finalStats.atk = Math.floor(finalStats.atk * item.attackMult);
 			if (item.spAttackMult) finalStats.spa = Math.floor(finalStats.spa * item.spAttackMult);
@@ -99,7 +100,7 @@ export function buildPokemon(set: PokemonSet, options: BuildPokemonOptions = {})
 	}
 
 	const resolvedMoves = set.moves
-		.map(moveName => DATA_CACHE.moves?.[moveName.toLowerCase()] || DATA_CACHE.moves?.[toID(moveName)])
+		.map(moveName => cache.moves?.[moveName.toLowerCase()] || cache.moves?.[toID(moveName)])
 		.filter((move): move is NonNullable<typeof move> => !!move);
 
 	return {

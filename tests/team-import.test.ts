@@ -74,3 +74,57 @@ Calm Nature
 	assert.equal(team[1].species, 'Indeedee-F');
 	assert.equal(team[1].item, 'Psychic Seed');
 });
+
+test('parseShowdownTeam handles CRLF and repeated blank lines between sets', () => {
+	const team = parseShowdownTeam(`Pikachu @ Light Ball\r
+Ability: Static\r
+Level: 50\r
+Jolly Nature\r
+- Thunderbolt\r
+\r
+\r
+Bulbasaur @ Eviolite\r
+Ability: Overgrow\r
+Level: 50\r
+Calm Nature\r
+- Giga Drain\r
+`);
+
+	assert.equal(team.length, 2);
+	assert.equal(team[0].species, 'Pikachu');
+	assert.equal(team[1].species, 'Bulbasaur');
+});
+
+test('parseShowdownTeam parses case-insensitive field labels and trims move prefixes', () => {
+	const team = parseShowdownTeam(`Gengar @ Black Sludge
+aBiLiTy: Levitate
+lEvEl: 50
+tErA tYpE: Ghost
+EVs: 4 hp / 252 spa / 252 spe
+TiMid Nature
+--- Shadow Ball
+`);
+
+	assert.equal(team.length, 1);
+	assert.equal(team[0].ability, 'Levitate');
+	assert.equal(team[0].level, 50);
+	assert.equal(team[0].teraType, 'Ghost');
+	assert.equal(team[0].evs.spa, 252);
+	assert.deepEqual(team[0].moves, ['Shadow Ball']);
+});
+
+test('parseShowdownTeam ignores invalid spread tokens while parsing valid entries', () => {
+	const team = parseShowdownTeam(`Pikachu
+EVs: xyz hp / 252 spe / 4 atk
+IVs: ??? spa / 0 atk
+Hardy Nature
+- Thunderbolt
+`);
+
+	assert.equal(team.length, 1);
+	assert.equal(team[0].evs.spe, 252);
+	assert.equal(team[0].evs.atk, 4);
+	assert.equal(team[0].evs.hp, 0);
+	assert.equal(team[0].ivs.atk, 0);
+	assert.equal(team[0].ivs.spa, 31);
+});

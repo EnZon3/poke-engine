@@ -4,7 +4,7 @@ Last updated: April 2026
 
 This roadmap should evolve with contributor priorities.
 
-## Next Release Candidate: v1.2.0
+## Next Release Candidate: v1.3.0
 
 Theme: explainability and team diagnostics.
 

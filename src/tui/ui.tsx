@@ -9,9 +9,11 @@ import { parseTeamInput } from '../team-import.js';
 import { fetchTrainerTeamFromSource } from '../trainers.js';
 import type { CliResult, EvaluationOptions, PokemonSet } from '../types.js';
 import { parseGeneration } from '../utils.js';
+import { TUI_DEFAULT_EVALUATION_OPTIONS } from '../evaluation/config.js';
 import { createDefaultPokemonSet, getEditorFieldsForGeneration, type EditorField, type SetupState } from './model.js';
 import { buildSetupQuestions } from './setup.js';
-import { getFieldValue, teamFromDefaults, updateFieldValue } from './utils.js';
+import { teamFromDefaults, updateFieldValue } from './utils.js';
+import { handleTuiInput } from './state-machine.js';
 import { EditorView, HelpView, ResultsView, SetupView } from './views.js';
 
 export function InkTuiApp({ defaults }: { defaults: TuiDefaults }): React.JSX.Element {
@@ -58,12 +60,13 @@ export function InkTuiApp({ defaults }: { defaults: TuiDefaults }): React.JSX.El
 	const [savePath, setSavePath] = useState(defaults.myFile ?? 'my-team.json');
 
 	const evaluationOptions: EvaluationOptions = {
-		battleState: { weather: 'none', terrain: 'none', mySide: {}, enemySide: {} },
-		lookaheadTurns: 2,
-		allowSwitching: false,
-		roleWeight: 0.12,
-		defensiveWeight: 0.22,
-		opponentRiskWeight: 0.5,
+		...TUI_DEFAULT_EVALUATION_OPTIONS,
+		battleState: {
+			weather: TUI_DEFAULT_EVALUATION_OPTIONS.battleState?.weather ?? 'none',
+			terrain: TUI_DEFAULT_EVALUATION_OPTIONS.battleState?.terrain ?? 'none',
+			mySide: { ...(TUI_DEFAULT_EVALUATION_OPTIONS.battleState?.mySide ?? {}) },
+			enemySide: { ...(TUI_DEFAULT_EVALUATION_OPTIONS.battleState?.enemySide ?? {}) },
+		},
 		...defaults.evaluationOptions,
 		battleFormat: setup.battleFormat,
 		mechanicsPolicy: setup.mechanicsPolicy,
@@ -154,160 +157,87 @@ export function InkTuiApp({ defaults }: { defaults: TuiDefaults }): React.JSX.El
 		}
 	};
 
+	const addSlot = (): void => {
+		const updateTeam = editingSide === 'my' ? setMyTeam : setEnemyTeam;
+		updateTeam((prev: PokemonSet[]) => [...prev, createDefaultPokemonSet()]);
+	};
+
+	const removeSelectedSlot = (): void => {
+		const updateTeam = editingSide === 'my' ? setMyTeam : setEnemyTeam;
+		updateTeam((prev: PokemonSet[]) => prev.filter((_: PokemonSet, i: number) => i !== selectedPokemon));
+		if (editingSide === 'my') setSelectedMyPokemon((v: number) => Math.max(0, Math.min(v, activeTeam.length - 2)));
+		else setSelectedEnemyPokemon((v: number) => Math.max(0, Math.min(v, activeTeam.length - 2)));
+	};
+
+	const commitSave = (): void => {
+		void (async () => {
+			try {
+				const fs = await import('node:fs');
+				const teamToSave = editingSide === 'my' ? myTeam : enemyTeam;
+				fs.writeFileSync(savePath, JSON.stringify(teamToSave, null, 2));
+				setStatusMsg(`Saved ${editingSide === 'my' ? 'your' : 'enemy'} team to ${savePath}`);
+				setSavePrompt(false);
+			} catch (err) {
+				setError(err instanceof Error ? err.message : String(err));
+			}
+		})();
+	};
+
 	useInput((input, key) => {
-		if (busy) return;
-		if (phase === 'setup') {
-			if (key.escape || (key.ctrl && input === 'c')) {
-				exit();
-				return;
-			}
-			if (!activeQuestion) return;
-			if (activeQuestion.kind === 'select' && activeQuestion.options && activeQuestion.options.length > 0) {
-				const idx = Math.max(0, activeQuestion.options.findIndex(opt => opt.value === activeQuestion.value));
-				if (key.upArrow) {
-					const nextIdx = (idx - 1 + activeQuestion.options.length) % activeQuestion.options.length;
-					activeQuestion.setValue(activeQuestion.options[nextIdx].value);
-					return;
-				}
-				if (key.downArrow) {
-					const nextIdx = (idx + 1) % activeQuestion.options.length;
-					activeQuestion.setValue(activeQuestion.options[nextIdx].value);
-					return;
-				}
-			}
-			if (key.return) {
-				const errorText = activeQuestion.validate?.(activeQuestion.value) ?? null;
-				if (errorText) {
-					setError(errorText);
-					return;
-				}
-				setError(null);
-				if (setupIndex >= setupQuestions.length - 1) {
-					void finalizeSetup();
-				} else {
-					setSetupIndex((v: number) => v + 1);
-				}
-			}
-			if (key.leftArrow && setupIndex > 0) setSetupIndex((v: number) => v - 1);
-			return;
-		}
-
-		if (phase === 'editor') {
-			if (savePrompt) {
-				if (key.escape) {
-					setSavePrompt(false);
-					return;
-				}
-				if (key.return) {
-					void (async () => {
-						try {
-							const fs = await import('node:fs');
-							const teamToSave = editingSide === 'my' ? myTeam : enemyTeam;
-							fs.writeFileSync(savePath, JSON.stringify(teamToSave, null, 2));
-							setStatusMsg(`Saved ${editingSide === 'my' ? 'your' : 'enemy'} team to ${savePath}`);
-							setSavePrompt(false);
-						} catch (err) {
-							setError(err instanceof Error ? err.message : String(err));
-						}
-					})();
-				}
-				return;
-			}
-			if (editMode) {
-				if (key.escape) {
-					setEditMode(false);
-					return;
-				}
-				if (key.return) {
-					const field = editorFields[selectedField];
-					if (!field) return;
-					setFieldValue(field, editBuffer);
-					setEditMode(false);
-					setStatusMsg(`Updated ${field} for slot ${selectedPokemon + 1}.`);
-				}
-				return;
-			}
-			if ((key.ctrl && input === 'c') || input === 'q') {
-				exit();
-				return;
-			}
-			if (key.upArrow) {
-				if (editingSide === 'my') setSelectedMyPokemon((v: number) => Math.max(0, v - 1));
-				else setSelectedEnemyPokemon((v: number) => Math.max(0, v - 1));
-			}
-			if (key.downArrow) {
-				const maxIndex = Math.max(0, activeTeam.length - 1);
-				if (editingSide === 'my') setSelectedMyPokemon((v: number) => Math.min(maxIndex, v + 1));
-				else setSelectedEnemyPokemon((v: number) => Math.min(maxIndex, v + 1));
-			}
-			if (key.leftArrow) setSelectedField((v: number) => Math.max(0, v - 1));
-			if (key.rightArrow) setSelectedField((v: number) => Math.min(editorFields.length - 1, v + 1));
-			if (input === 'o') {
-				setEditingSide((v) => (v === 'my' ? 'enemy' : 'my'));
-				setStatusMsg(`Now editing ${editingSide === 'my' ? 'enemy' : 'your'} team.`);
-			}
-			if (input === 'e') {
-				const field = editorFields[selectedField];
-				if (!field) return;
-				setEditBuffer(getFieldValue(field, activePokemon));
-				setEditMode(true);
-			}
-			if (input === 'a' && activeTeam.length < 6) {
-				const updateTeam = editingSide === 'my' ? setMyTeam : setEnemyTeam;
-				updateTeam((prev: PokemonSet[]) => [...prev, createDefaultPokemonSet()]);
-				setStatusMsg(`Added a new ${editingSide === 'my' ? 'party' : 'enemy'} slot.`);
-			}
-			if (input === 'x' && activeTeam.length > 1) {
-				const updateTeam = editingSide === 'my' ? setMyTeam : setEnemyTeam;
-				updateTeam((prev: PokemonSet[]) => prev.filter((_: PokemonSet, i: number) => i !== selectedPokemon));
-				if (editingSide === 'my') setSelectedMyPokemon((v: number) => Math.max(0, Math.min(v, activeTeam.length - 2)));
-				else setSelectedEnemyPokemon((v: number) => Math.max(0, Math.min(v, activeTeam.length - 2)));
-				setStatusMsg(`Removed selected ${editingSide === 'my' ? 'party' : 'enemy'} slot.`);
-			}
-			if (input === 'p') {
-				estimateSelectedSpread();
-			}
-			if (input === 's') {
-				setSavePath(editingSide === 'my' ? (defaults.myFile ?? 'my-team.json') : (defaults.enemyFile ?? 'enemy-team.json'));
-				setSavePrompt(true);
-			}
-			if (input === 'c') {
-				void calculate();
-			}
-			return;
-		}
-
-		if (phase === 'results') {
-			if ((key.ctrl && input === 'c') || input === 'q') {
-				exit();
-				return;
-			}
-			if ((key.leftArrow || key.upArrow) && resultEnemyKeys.length > 0) {
-				setSelectedResultIndex((v) => Math.max(0, v - 1));
-				return;
-			}
-			if ((key.rightArrow || key.downArrow) && resultEnemyKeys.length > 0) {
-				setSelectedResultIndex((v) => Math.min(resultEnemyKeys.length - 1, v + 1));
-				return;
-			}
-			if ((key.return || input === 'e') && resultEnemyKeys.length > 0) {
-				const selectedEnemy = resultEnemyKeys[Math.max(0, Math.min(selectedResultIndex, resultEnemyKeys.length - 1))];
-				setExpandedEnemyKey((v) => (v === selectedEnemy ? null : selectedEnemy));
-				return;
-			}
-			if (input === 'h') {
-				setShowHelpFullscreen(v => !v);
-			}
-			if (input === 'm') {
-				setShowHelpFullscreen(false);
-			}
-			if (input === 'b') {
-				setPhase('editor');
-			}
-			if (input === 'r') {
-				void calculate();
-			}
-		}
+		handleTuiInput(input, key, {
+			phase,
+			busy,
+			setup: {
+				setupIndex,
+				setupQuestionsLength: setupQuestions.length,
+				activeQuestion,
+				setSetupIndex,
+				setError,
+				finalizeSetup: () => { void finalizeSetup(); },
+				exit,
+			},
+			editor: {
+				savePrompt,
+				setSavePrompt,
+				editMode,
+				setEditMode,
+				editorFields,
+				selectedField,
+				setSelectedField,
+				selectedPokemon,
+				activePokemon,
+				activeTeam,
+				editingSide,
+				setEditingSide,
+				setSelectedMyPokemon,
+				setSelectedEnemyPokemon,
+				setEditBuffer,
+				setSavePath,
+				defaultMyFile: defaults.myFile,
+				defaultEnemyFile: defaults.enemyFile,
+				setStatusMsg,
+				setError,
+				estimateSelectedSpread,
+				calculate: () => { void calculate(); },
+				setFieldValue,
+				addSlot,
+				removeSelectedSlot,
+				commitSave,
+				exit,
+				editBuffer,
+			},
+			results: {
+				resultEnemyKeys,
+				selectedResultIndex,
+				setSelectedResultIndex,
+				expandedEnemyKey,
+				setExpandedEnemyKey,
+				setShowHelpFullscreen,
+				setPhaseEditor: () => setPhase('editor'),
+				calculate: () => { void calculate(); },
+				exit,
+			},
+		});
 	});
 
 	if (phase === 'setup') {

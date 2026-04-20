@@ -1,7 +1,7 @@
-import { DATA_CACHE } from '../data.js';
+import { getDataCache } from '../data.js';
 import { typeEffectiveness } from '../mechanics.js';
 import type { BattlePokemon, BattleState, MoveEntry } from '../types.js';
-import { clamp, getSideForDefender, stageMultiplier, statusActionChance, typeNormalized } from './helpers.js';
+import { getSideForDefender, stageMultiplier, statusActionChance, typeNormalized } from './helpers.js';
 import type { DamageProfile } from './types.js';
 
 function resolvedHitCount(move: MoveEntry): number {
@@ -41,10 +41,11 @@ export function baseDamageWithoutRandom(
 	battleState: BattleState | undefined,
 	attackerOnMySide: boolean,
 ): number {
+	const cache = getDataCache();
 	if (move.category === 'Status' || move.basePower === 0) return 0;
 
-	if (defender.ability && DATA_CACHE.abilities) {
-		const defAbility = DATA_CACHE.abilities[defender.ability.toLowerCase()];
+	if (defender.ability && cache.abilities) {
+		const defAbility = cache.abilities[defender.ability.toLowerCase()];
 		if (defAbility?.immuneTo?.includes(move.type)) return 0;
 	}
 
@@ -122,8 +123,8 @@ export function baseDamageWithoutRandom(
 	const levelFactor = Math.floor((2 * attacker.level) / 5) + 2;
 	let base = Math.floor(Math.floor(levelFactor * power * attackStat / Math.max(1, defenseStat)) / 50) + 2;
 
-	if (attacker.ability && DATA_CACHE.abilities) {
-		const attAb = DATA_CACHE.abilities[attacker.ability.toLowerCase()];
+	if (attacker.ability && cache.abilities) {
+		const attAb = cache.abilities[attacker.ability.toLowerCase()];
 		if (attAb?.technician && move.basePower > 0 && move.basePower <= 60) {
 			base *= 1.5;
 		}
@@ -134,8 +135,8 @@ export function baseDamageWithoutRandom(
 	const hasBaseTypeStab = baseTypes.includes(move.type);
 	const hasTeraTypeStab = !!teraType && teraType === move.type;
 	let adaptability = false;
-	if (attacker.ability && DATA_CACHE.abilities) {
-		adaptability = !!DATA_CACHE.abilities[attacker.ability.toLowerCase()]?.adaptability;
+	if (attacker.ability && cache.abilities) {
+		adaptability = !!cache.abilities[attacker.ability.toLowerCase()]?.adaptability;
 	}
 
 	let stab = 1.0;
@@ -166,8 +167,8 @@ export function baseDamageWithoutRandom(
 	}
 
 	let itemMult = 1.0;
-	if (attacker.item && DATA_CACHE.items) {
-		const item = DATA_CACHE.items[attacker.item.toLowerCase()];
+	if (attacker.item && cache.items) {
+		const item = cache.items[attacker.item.toLowerCase()];
 		if (item?.damageMult) itemMult *= item.damageMult;
 		if (item?.superEffectiveMult && typeMultiplier > 1.0) itemMult *= item.superEffectiveMult;
 	}
