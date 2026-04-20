@@ -1,4 +1,4 @@
-import { DATA_CACHE } from '../data.js';
+import { getDataCache } from '../data.js';
 import { selectBestDoublesChoice, selectBestSinglesChoice } from './branching.js';
 import type { BestDoublesChoice, BestSinglesChoice } from './branching.js';
 import { buildRationale, confidenceFromSignals } from './helpers.js';
@@ -126,7 +126,8 @@ export function evaluateTeams(
 	enemyTeam: PokemonSet[],
 	options: EvaluationOptions = {},
 ): Record<string, MatchupEvaluation[]> {
-	if (!DATA_CACHE.species || !DATA_CACHE.moves) {
+	const cache = getDataCache();
+	if (!cache.species || !cache.moves) {
 		throw new Error('Data not loaded; call loadData() first');
 	}
 	const myVariantsBySlot = myTeam.map((set) => buildVariants(set, options));

@@ -6,7 +6,44 @@ The format is based on Keep a Changelog and this project follows Semantic Versio
 
 ## [Unreleased]
 
-- _No changes yet._
+### Added
+- Refactor phase completion artifacts and validation coverage:
+	- Module-level public-surface tests in `tests/public-surface.test.ts`.
+	- Golden behavior tests in `tests/golden.test.ts` for fixed `evaluateTeams` ordering and CLI `--json` output shape.
+- New shared evaluation configuration module:
+	- `src/evaluation/config.ts` with centralized mode presets and default option profiles.
+- New CLI submodules for clearer ownership boundaries:
+	- `src/cli/options.ts`
+	- `src/cli/execute.ts`
+	- `src/cli/help.ts`
+- New TUI input transition module:
+	- `src/tui/state-machine.ts`
+- New shared reporting helper:
+	- `src/reporting/console.ts`
+
+### Changed
+- Completed all items in `docs/REFACTOR_PLAN.md` (items 1-15 marked done).
+- CLI architecture refactored from monolithic parsing/execution into parse + execute + help modules while preserving flag behavior.
+- Evaluation mode defaults are now sourced from centralized presets instead of duplicated literals.
+- Data cache handling now has explicit boundary helpers in `src/data.ts`:
+	- `getDataCache()`
+	- `setDataCache()`
+	- `resetDataCache()`
+	- `isDataLoaded()`
+- Cache-consuming modules now use the cache boundary API (pokemon building, estimation, damage/evaluation orchestration).
+- TUI keyboard/input handling moved into a dedicated state-transition handler for setup/editor/results phases.
+- Benchmark and accuracy scripts now share console-rule formatting helpers to keep output formatting aligned.
+
+### Fixed
+- Removed remaining dead internals identified by unused-symbol checks:
+	- unused import in `src/evaluation/damage.ts`
+	- unused local in `src/evaluation/helpers.ts`
+	- unused import binding in `src/evaluation/index.ts`
+
+### Verification
+- `npm run validate:all` passes after refactor completion.
+- `npx tsc --noEmit --noUnusedLocals --noUnusedParameters` passes.
+- Benchmark output remains text-identical to baseline (`diff -u` against `docs/validation-reports/REFACTOR_BENCH_BASELINE_2026-04-17.txt` produced no output).
 
 ## [1.1.2] - 2026-04-16
 

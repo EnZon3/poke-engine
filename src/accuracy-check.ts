@@ -5,6 +5,7 @@ import { loadData } from './data.js';
 import { parseShowdownTeam } from './team-import.js';
 import { buildPokemon } from './pokemon.js';
 import { computeDamageProfile } from './evaluation/damage.js';
+import { horizontalRule } from './reporting/console.js';
 import type { PokemonSet } from './types.js';
 
 type TeamSide = 'my' | 'enemy';
@@ -114,7 +115,7 @@ async function main(): Promise<void> {
 
 	let failures = 0;
 	console.log('\nAccuracy spot-check vs Showdown calc');
-	console.log('────────────────────────────────────────────────────────');
+	console.log(horizontalRule(56));
 
 	for (const check of CASES) {
 		const attackerSet = findSet(check.attackerSide === 'my' ? myTeam : enemyTeam, check.attackerSpecies);
@@ -152,7 +153,7 @@ async function main(): Promise<void> {
 		console.log(`  diff:         min ${minDiff.toFixed(2)}% | max ${maxDiff.toFixed(2)}% | tol ${check.tolerancePercent.toFixed(2)}%`);
 	}
 
-	console.log('────────────────────────────────────────────────────────');
+	console.log(horizontalRule(56));
 	if (failures > 0) {
 		console.error(`Status: FAIL (${failures} case${failures === 1 ? '' : 's'} outside tolerance)`);
 		process.exit(1);

@@ -1,6 +1,7 @@
 import { loadData } from './data.js';
 import { evaluateTeams } from './evaluation/index.js';
 import { scenarios } from './benchmark-scenarios.js';
+import { horizontalRule } from './reporting/console.js';
 import type { EvaluationOptions } from './types.js';
 
 const ANSI = {
@@ -27,16 +28,12 @@ function dim(text: string): string {
 	return paint(text, ANSI.dim);
 }
 
-function line(width = 72): string {
-	return '─'.repeat(width);
-}
-
 async function run(): Promise<void> {
 	await loadData(undefined, 'showdown');
 
 	let passed = 0;
 	console.log(`\n${bold('Benchmark validation')}`);
-	console.log(dim(line()));
+	console.log(dim(horizontalRule()));
 	console.log(dim(`Scenarios: ${scenarios.length}`));
 	for (const scenario of scenarios) {
 		await loadData(scenario.gen, 'showdown');
@@ -96,7 +93,7 @@ async function run(): Promise<void> {
 		const icon = ok ? paint('✓', ANSI.green) : paint('✗', ANSI.red);
 		const formatTag = paint(scenario.format.toUpperCase(), ANSI.cyan);
 
-		console.log(`\n${dim(line())}`);
+		console.log(`\n${dim(horizontalRule())}`);
 		console.log(`${icon} [${statusText}] ${bold(scenario.name)} ${dim(`(${formatTag})`)}`);
 		console.log(`${paint('Top 3', ANSI.cyan)}      ${top3.join('  •  ')}`);
 		if (scenario.format === 'doubles' && ranked.length > 0) {
@@ -118,7 +115,7 @@ async function run(): Promise<void> {
 	const finalStatus = failed === 0 ? paint('ALL PASS', ANSI.green) : paint('HAS FAILURES', ANSI.red);
 
 	console.log(`\n${bold('Validation summary')}`);
-	console.log(dim(line()));
+	console.log(dim(horizontalRule()));
 	console.log(`Status: ${finalStatus}`);
 	console.log(`Passed: ${paint(String(passed), ANSI.green)} / ${scenarios.length}`);
 	if (failed > 0) {

@@ -1,5 +1,6 @@
 import { typeEffectiveness } from '../mechanics.js';
 import type { BattlePokemon, BattleState, EvaluationOptions, MoveEntry, SideState } from '../types.js';
+import { MODE_PRESETS } from './config.js';
 import type { ConfidenceLevel, DamageProfile } from './types.js';
 
 export function stageMultiplier(stageRaw?: number): number {
@@ -46,22 +47,22 @@ export function statusActionChance(pokemon: BattlePokemon): number {
 export function modePreset(options: EvaluationOptions): Required<Pick<EvaluationOptions, 'lookaheadTurns' | 'defensiveWeight' | 'opponentRiskWeight'>> {
 	if (options.mode === 'competitive') {
 		return {
-			lookaheadTurns: options.lookaheadTurns ?? 3,
-			defensiveWeight: options.defensiveWeight ?? 0.4,
-			opponentRiskWeight: options.opponentRiskWeight ?? 0.65,
+			lookaheadTurns: options.lookaheadTurns ?? MODE_PRESETS.competitive.lookaheadTurns,
+			defensiveWeight: options.defensiveWeight ?? MODE_PRESETS.competitive.defensiveWeight,
+			opponentRiskWeight: options.opponentRiskWeight ?? MODE_PRESETS.competitive.opponentRiskWeight,
 		};
 	}
 	if (options.mode === 'casual') {
 		return {
-			lookaheadTurns: options.lookaheadTurns ?? 2,
-			defensiveWeight: options.defensiveWeight ?? 0.22,
-			opponentRiskWeight: options.opponentRiskWeight ?? 0.5,
+			lookaheadTurns: options.lookaheadTurns ?? MODE_PRESETS.casual.lookaheadTurns,
+			defensiveWeight: options.defensiveWeight ?? MODE_PRESETS.casual.defensiveWeight,
+			opponentRiskWeight: options.opponentRiskWeight ?? MODE_PRESETS.casual.opponentRiskWeight,
 		};
 	}
 	return {
-		lookaheadTurns: options.lookaheadTurns ?? 2,
-		defensiveWeight: options.defensiveWeight ?? 0.3,
-		opponentRiskWeight: options.opponentRiskWeight ?? 0.55,
+		lookaheadTurns: options.lookaheadTurns ?? MODE_PRESETS.custom.lookaheadTurns,
+		defensiveWeight: options.defensiveWeight ?? MODE_PRESETS.custom.defensiveWeight,
+		opponentRiskWeight: options.opponentRiskWeight ?? MODE_PRESETS.custom.opponentRiskWeight,
 	};
 }
 
@@ -128,7 +129,7 @@ export function clamp(value: number, min: number, max: number): number {
 
 export function defensiveReliabilityScore(
 	attacker: BattlePokemon,
-	defender: BattlePokemon,
+	_defender: BattlePokemon,
 	myProfile: DamageProfile | undefined,
 	enemyProfile: DamageProfile | undefined,
 	enemyMove: MoveEntry | undefined,

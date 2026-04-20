@@ -14,6 +14,28 @@ export function setActiveGeneration(gen?: number): void {
 	ACTIVE_GENERATION = gen ?? 9;
 }
 
+export function getDataCache(): DataCache {
+	return DATA_CACHE;
+}
+
+export function setDataCache(cache: DataCache): void {
+	DATA_CACHE.species = cache.species;
+	DATA_CACHE.moves = cache.moves;
+	DATA_CACHE.abilities = cache.abilities;
+	DATA_CACHE.items = cache.items;
+}
+
+export function resetDataCache(): void {
+	delete DATA_CACHE.species;
+	delete DATA_CACHE.moves;
+	delete DATA_CACHE.abilities;
+	delete DATA_CACHE.items;
+}
+
+export function isDataLoaded(): boolean {
+	return Boolean(DATA_CACHE.species && DATA_CACHE.moves && DATA_CACHE.abilities && DATA_CACHE.items);
+}
+
 async function fetchOptionalShowdownDataset(prefix: string, gen: number | undefined, fileName: string): Promise<any> {
 	try {
 		return gen
@@ -46,7 +68,7 @@ async function loadSpeciesFromPokeAPI(gen?: number): Promise<Record<string, Spec
 
 export async function loadData(gen?: number, dataSource: DataSource = 'showdown'): Promise<void> {
 	setActiveGeneration(gen);
-	if (DATA_CACHE.species && DATA_CACHE.moves && DATA_CACHE.abilities && DATA_CACHE.items) {
+	if (isDataLoaded()) {
 		return;
 	}
 	if (gen !== undefined && (gen < 1 || gen > 9)) {
@@ -74,10 +96,12 @@ export async function loadData(gen?: number, dataSource: DataSource = 'showdown'
 	const abilities = normalizeAbilities(abilitiesRaw);
 	const items = normalizeItems(itemsRaw);
 
-	DATA_CACHE.species = species;
-	DATA_CACHE.moves = moves;
-	DATA_CACHE.abilities = abilities;
-	DATA_CACHE.items = items;
+	setDataCache({
+		species,
+		moves,
+		abilities,
+		items,
+	});
 }
 
 export function resolveSpecies(name: string): SpeciesEntry | undefined {
