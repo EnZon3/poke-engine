@@ -1,6 +1,6 @@
 # Release Process
 
-This document defines the minimum release hygiene for `poke-engine`.
+This document defines the minimum release hygiene for `poke-eval`.
 
 ## Release types
 

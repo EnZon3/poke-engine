@@ -1,6 +1,6 @@
 # TUI User Guide
 
-This guide walks through every screen, prompt, and keybinding in the poke-engine terminal user interface (TUI).
+This guide walks through every screen, prompt, and keybinding in the poke-eval terminal user interface (TUI).
 
 ## Table of contents
 
@@ -33,14 +33,14 @@ npm start -- --tui
 
 ```bash
 # macOS / Linux
-chmod +x ./poke-engine
-./poke-engine
+chmod +x ./poke-eval
+./poke-eval
 
 # Windows
-poke-engine.cmd
+poke-eval.cmd
 ```
 
-On Windows, you can also double-click `poke-engine.cmd` from the extracted portable folder.
+On Windows, you can also double-click `poke-eval.cmd` from the extracted portable folder.
 
 The TUI opens in your terminal and guides you through three sequential phases: **Setup → Editor → Results**.
 

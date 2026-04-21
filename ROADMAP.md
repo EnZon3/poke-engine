@@ -39,8 +39,8 @@ Primary release scope: `0-2:6`, `0-2:7`, `0-2:8`, `0-2:9`, `0-2:10`, `0-2:11`, `
 	- Add `trickRoom?: boolean` to `BattleState` and invert speed comparison while active.
 	- Add Tailwind side state, such as `myTailwind?: boolean` and `enemyTailwind?: boolean`, and apply a 2x speed multiplier before speed comparisons.
 	- Optionally flag teams carrying Trick Room or Tailwind as able to shift speed dynamics.
-- [ ] `0-2:11` Rename the project to reduce name collision with other `poke-engine` projects.
-	- Evaluate names along the lines of `poke-eval`.
+- [x] `0-2:11` Rename the project to reduce name collision with other `poke-eval` projects.
+	- New project name: `poke-eval`.
 	- Update package metadata, CLI references, docs, repository naming, and release artifacts once the new name is chosen.
 	- Include a short migration note for users who installed or referenced the old project name.
 

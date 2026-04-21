@@ -1,6 +1,6 @@
-# Contributing to poke-engine
+# Contributing to poke-eval
 
-Thanks for helping improve `poke-engine`.
+Thanks for helping improve `poke-eval`.
 
 ## Quick start
 

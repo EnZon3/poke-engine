@@ -57,7 +57,7 @@ test('golden: evaluateTeams maintains expected top ordering for fixed fixture', 
 
 test('golden: CLI --json output keeps stable shape for single-enemy fixture', async () => {
 	seedCache();
-	const dir = mkdtempSync(join(tmpdir(), 'poke-engine-cli-golden-'));
+	const dir = mkdtempSync(join(tmpdir(), 'poke-eval-cli-golden-'));
 	const myPath = join(dir, 'my-team.txt');
 	const enemyPath = join(dir, 'enemy-team.txt');
 	writeFileSync(myPath, 'Pikachu\n- Thunderbolt\n');

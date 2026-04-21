@@ -8,7 +8,7 @@ Validate implemented in-battle behavior for:
 - Dynamax
 - Terastallization
 
-This report focuses on mechanics currently modeled by `poke-engine` evaluation logic, not full turn-engine simulation parity.
+This report focuses on mechanics currently modeled by `poke-eval` evaluation logic, not full turn-engine simulation parity.
 
 ## Source references
 

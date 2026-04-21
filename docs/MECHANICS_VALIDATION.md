@@ -2,7 +2,7 @@
 
 Last updated: April 2026
 
-This document explains how battle mechanics are validated in `poke-engine`, what confidence level each area currently has, and where simplifications still exist.
+This document explains how battle mechanics are validated in `poke-eval`, what confidence level each area currently has, and where simplifications still exist.
 
 ## Validation goals
 

@@ -81,11 +81,11 @@ set "DIR=%~dp0"
 & "$dir\\runtime\\node.exe" "$dir\\app\\main.js" $args
 `;
 
-	const launcherPath = join(portableDir, 'poke-engine');
+	const launcherPath = join(portableDir, 'poke-eval');
 	writeFileSync(launcherPath, posixLauncher, 'utf8');
 	chmodSync(launcherPath, 0o755);
-	writeFileSync(join(portableDir, 'poke-engine.cmd'), cmdLauncher, 'utf8');
-	writeFileSync(join(portableDir, 'poke-engine.ps1'), psLauncher, 'utf8');
+	writeFileSync(join(portableDir, 'poke-eval.cmd'), cmdLauncher, 'utf8');
+	writeFileSync(join(portableDir, 'poke-eval.ps1'), psLauncher, 'utf8');
 }
 
 function writeReadme(portableDir, target) {
@@ -94,16 +94,16 @@ function writeReadme(portableDir, target) {
 This folder contains a self-contained runtime package for ${target.id}.
 
 Double-click on Windows:
-- poke-engine.cmd
+- poke-eval.cmd
 
 Run from a terminal:
-- macOS/Linux: ./poke-engine
-- Windows cmd: poke-engine.cmd
-- Windows PowerShell: ./poke-engine.ps1
+- macOS/Linux: ./poke-eval
+- Windows cmd: poke-eval.cmd
+- Windows PowerShell: ./poke-eval.ps1
 
 The guided TUI opens by default. To use CLI mode, pass CLI flags from a terminal, for example:
-- ./poke-engine --my=my-team.json --enemy=enemy-team.json --json
-- poke-engine.cmd --my=my-team.json --enemy=enemy-team.json --json
+- ./poke-eval --my=my-team.json --enemy=enemy-team.json --json
+- poke-eval.cmd --my=my-team.json --enemy=enemy-team.json --json
 
 Notes:
 - Includes bundled Node runtime (${target.nodeName}).
@@ -127,7 +127,7 @@ async function runtimeForTarget(target) {
 }
 
 async function archivePortable(portableDir, target) {
-	const archivePath = join(releaseDir, `poke-engine-portable-${target.id}.tar.gz`);
+	const archivePath = join(releaseDir, `poke-eval-portable-${target.id}.tar.gz`);
 	rmSync(archivePath, { force: true });
 	await pipeline(
 		tar.pack(releaseDir, { entries: [basename(portableDir)] }),
@@ -155,7 +155,7 @@ async function buildPortable(target, archive) {
 
 	writeFileSync(
 		join(appDir, 'package.json'),
-		JSON.stringify({ name: 'poke-engine-portable', private: true, type: 'module' }, null, 2) + '\n',
+		JSON.stringify({ name: 'poke-eval-portable', private: true, type: 'module' }, null, 2) + '\n',
 		'utf8',
 	);
 

@@ -21,7 +21,7 @@ test('data module public surface exports expected entrypoints', () => {
 });
 
 test('team-import public surface entrypoint matches parseTeamInput behavior', () => {
-	const dir = mkdtempSync(join(tmpdir(), 'poke-engine-team-import-'));
+	const dir = mkdtempSync(join(tmpdir(), 'poke-eval-team-import-'));
 	const file = join(dir, 'team.json');
 	const jsonText = '[{"species":"Pikachu","level":50,"nature":"Serious","ivs":{"hp":31,"atk":31,"def":31,"spa":31,"spd":31,"spe":31},"evs":{"hp":0,"atk":0,"def":0,"spa":252,"spd":4,"spe":252},"moves":["Thunderbolt"]}]';
 	writeFileSync(file, jsonText);

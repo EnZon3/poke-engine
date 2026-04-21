@@ -53,6 +53,6 @@ Use this structure in your PR description:
 
 ## Scope reminder
 
-`poke-engine` is a practical matchup-ranking engine, not a full battle simulator.
+`poke-eval` is a practical matchup-ranking engine, not a full battle simulator.
 
 A contribution is still valuable when it improves ranking quality and internal consistency even if it does not implement every edge-case interaction.

@@ -1,5 +1,5 @@
 name: Feature request
-description: Suggest an enhancement for poke-engine
+description: Suggest an enhancement for poke-eval
 title: "[Feature]: "
 labels:
   - type: feature

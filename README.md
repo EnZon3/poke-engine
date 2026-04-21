@@ -1,10 +1,10 @@
-# poke-engine
+# poke-eval
 
 [![Node.js >=22](https://img.shields.io/badge/node-%3E%3D22-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![License: AGPL](https://img.shields.io/badge/License-AGPLv3-blue.svg)](https://opensource.org/licenses/AGPL-3.0)
 
-A TypeScript Pokémon matchup engine for ranking team-vs-team options from JSON teams, Showdown export text, PKHeX-compatible save files, named trainers, or an interactive terminal UI.
+A TypeScript Pokémon matchup evaluator for ranking team-vs-team options from JSON teams, Showdown export text, PKHeX-compatible save files, named trainers, or an interactive terminal UI.
 
 Designed for practical matchup planning: fast enough for iteration, detailed enough for actionable decisions.
 
@@ -103,13 +103,13 @@ Starter files you can edit directly:
 
 If you download packaged artifacts from Releases, users do not need Node.js or npm.
 
-Recommended for most users: **portable runtime builds** (full app, including TUI). On Windows, double-click `poke-engine.cmd` to open the guided TUI.
+Recommended for most users: **portable runtime builds** (full app, including TUI). On Windows, double-click `poke-eval.cmd` to open the guided TUI.
 
 Portable artifact layout:
 
-- `poke-engine-portable-<platform>-<arch>.tar.gz`
+- `poke-eval-portable-<platform>-<arch>.tar.gz`
 - extracted folder: `portable-<platform>-<arch>/`
-- launcher files: `poke-engine`, `poke-engine.cmd`, `poke-engine.ps1`
+- launcher files: `poke-eval`, `poke-eval.cmd`, `poke-eval.ps1`
 - bundled runtime + app files
 
 Nightly builds:
@@ -120,28 +120,28 @@ Nightly builds:
 Run examples after download (portable build):
 
 - macOS / Linux:
-	- `chmod +x ./poke-engine`
-	- `./poke-engine`
+	- `chmod +x ./poke-eval`
+	- `./poke-eval`
 - Windows:
-	- double-click `poke-engine.cmd`
-	- or run `poke-engine.cmd` from Command Prompt
+	- double-click `poke-eval.cmd`
+	- or run `poke-eval.cmd` from Command Prompt
 
 Alternative: single-file binaries (CLI-focused):
 
 Expected artifacts:
 
-- Windows: `poke-engine-win-x64.exe`
-- macOS Intel: `poke-engine-macos-x64`
-- macOS Apple Silicon: `poke-engine-macos-arm64`
-- Linux x64: `poke-engine-linux-x64`
+- Windows: `poke-eval-win-x64.exe`
+- macOS Intel: `poke-eval-macos-x64`
+- macOS Apple Silicon: `poke-eval-macos-arm64`
+- Linux x64: `poke-eval-linux-x64`
 
 Run examples after download:
 
 - Windows:
-	- `./poke-engine-win-x64.exe --my=my-team.json --enemy=enemy-team.json --json`
+	- `./poke-eval-win-x64.exe --my=my-team.json --enemy=enemy-team.json --json`
 - macOS / Linux:
-	- `chmod +x ./poke-engine-macos-arm64`
-	- `./poke-engine-macos-arm64 --my=my-team.json --enemy=enemy-team.json --json`
+	- `chmod +x ./poke-eval-macos-arm64`
+	- `./poke-eval-macos-arm64 --my=my-team.json --enemy=enemy-team.json --json`
 
 Current limitation:
 

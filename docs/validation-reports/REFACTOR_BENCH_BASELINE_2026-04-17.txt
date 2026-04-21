@@ -1,5 +1,5 @@
 
-> poke-engine@1.1.2 validate:bench
+> poke-eval@1.1.2 validate:bench
 > tsx src/benchmark.ts
 
 
