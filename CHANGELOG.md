@@ -6,10 +6,16 @@ The format is based on Keep a Changelog and this project follows Semantic Versio
 
 ## [Unreleased]
 
+- _None yet_
+
+## [1.2.0] - 2026-04-21
+
 ### Added
 - Refactor phase completion artifacts and validation coverage:
 	- Module-level public-surface tests in `tests/public-surface.test.ts`.
 	- Golden behavior tests in `tests/golden.test.ts` for fixed `evaluateTeams` ordering and CLI `--json` output shape.
+- New packaging cleanup command:
+	- `npm run package:clean`
 - New shared evaluation configuration module:
 	- `src/evaluation/config.ts` with centralized mode presets and default option profiles.
 - New CLI submodules for clearer ownership boundaries:
@@ -23,6 +29,7 @@ The format is based on Keep a Changelog and this project follows Semantic Versio
 
 ### Changed
 - Completed all items in `docs/REFACTOR_PLAN.md` (items 1-15 marked done).
+- Project version metadata bumped from `1.1.2` to `1.2.0`.
 - CLI architecture refactored from monolithic parsing/execution into parse + execute + help modules while preserving flag behavior.
 - Evaluation mode defaults are now sourced from centralized presets instead of duplicated literals.
 - Data cache handling now has explicit boundary helpers in `src/data.ts`:
@@ -33,6 +40,7 @@ The format is based on Keep a Changelog and this project follows Semantic Versio
 - Cache-consuming modules now use the cache boundary API (pokemon building, estimation, damage/evaluation orchestration).
 - TUI keyboard/input handling moved into a dedicated state-transition handler for setup/editor/results phases.
 - Benchmark and accuracy scripts now share console-rule formatting helpers to keep output formatting aligned.
+- Roadmap structure updated with stable reference IDs and current v1.3.0 planning scope.
 
 ### Fixed
 - Removed remaining dead internals identified by unused-symbol checks:
